@@ -8,13 +8,6 @@ type Report = {
   urgencia: "Alta" | "Media" | "Baja"
 }
 
-const reports: Report[] = [
-  { id: "#R-1042", barrio: "Barrio Norte", coords: "-34.603, -58.381", urgencia: "Alta" },
-  { id: "#R-1041", barrio: "La Ribera", coords: "-34.611, -58.372", urgencia: "Alta" },
-  { id: "#R-1040", barrio: "Villa del Parque", coords: "-34.598, -58.365", urgencia: "Media" },
-  { id: "#R-1039", barrio: "San Martín", coords: "-34.620, -58.390", urgencia: "Media" },
-  { id: "#R-1038", barrio: "Centro", coords: "-34.605, -58.375", urgencia: "Baja" },
-]
 
 const urgenciaStyles: Record<Report["urgencia"], string> = {
   Alta: "bg-danger/10 text-danger",
@@ -22,7 +15,7 @@ const urgenciaStyles: Record<Report["urgencia"], string> = {
   Baja: "bg-muted text-muted-foreground",
 }
 
-export function ReportsTable() {
+export function ReportsTable({ reports }: { reports: Report[] }) {
   return (
     <section className="flex flex-col overflow-hidden rounded-xl border border-border bg-card shadow-sm">
       <header className="flex items-center justify-between border-b border-border px-5 py-4">

@@ -3,8 +3,20 @@ import { Sidebar } from "@/components/dashboard/sidebar"
 import { KpiCards } from "@/components/dashboard/kpi-cards"
 import { RiskMap } from "@/components/dashboard/risk-map"
 import { ReportsTable } from "@/components/dashboard/reports-table"
+import { db, telegramReports } from "@/lib/db"
+import { desc } from "drizzle-orm"
 
-export default function Page() {
+export const dynamic = "force-dynamic"
+
+export default async function Page() {
+  const rows = await db.select().from(telegramReports).orderBy(desc(telegramReports.createdAt)).limit(20)
+  const reports = rows.map((row) => ({
+    id: `#R-${String(row.id).padStart(4, "0")}`,
+    barrio: row.neighborhood,
+    coords: row.latitude !== null && row.longitude !== null ? `${row.latitude.toFixed(3)}, ${row.longitude.toFixed(3)}` : "Sin GPS",
+    urgencia: (row.urgency === "Alta" ? "Alta" : row.urgency === "Baja" ? "Baja" : "Media") as "Alta" | "Media" | "Baja",
+  }))
+
   return (
     <div className="flex h-screen overflow-hidden bg-background">
       <div className="hidden lg:block">
@@ -46,7 +58,7 @@ export default function Page() {
             <KpiCards />
             <div className="grid gap-6 xl:grid-cols-2">
               <RiskMap />
-              <ReportsTable />
+              <ReportsTable reports={reports} />
             </div>
           </div>
         </main>
